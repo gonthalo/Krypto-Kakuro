@@ -299,6 +299,7 @@ window.addEventListener("keydown", function(event) {
 });
 
 function comenzar(){
+	clues = document.getElementById('an').value;
 	llaves = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
 	var kakuro = generar(forma);
 	puzzle = kakuro[0];
