@@ -9,6 +9,7 @@ var csumas = [];
 var selected = [];
 var puzzle = [];
 var clues = 7;
+var resuelto = false;
 
 function azar(lista){
 	var r = parseInt(Math.random()*lista.length);
@@ -152,12 +153,12 @@ function descifrar(texto, clave){
 	return res;
 }
 
-function dibujar(matriz, filas, columnas, clave){
+function dibujar(puzzle, filas, columnas, clave){
 	pluma.textAlign = 'center';
 	pluma.font = '30px Arial';
-	for (var ii=0; ii < matriz.length; ii++){
-		for (var jj=0; jj < matriz[0].length; jj++){
-			var valor = matriz[ii][jj];
+	for (var ii=0; ii < puzzle.length; ii++){
+		for (var jj=0; jj < puzzle[0].length; jj++){
+			var valor = puzzle[ii][jj];
 			if (valor!=0){
 				pluma.fillStyle = 'black';
 				pluma.fillRect(45*ii, 45*jj, 40, 40);
@@ -173,27 +174,32 @@ function dibujar(matriz, filas, columnas, clave){
 	pluma.font = '10px Arial';
 	var ind1 = 0;
 	var ind2 = 0;
-	for (var ii=0; ii < matriz.length; ii++){
+	for (var ii=0; ii < puzzle.length; ii++){
 		var check1 = false;
 		var check2 = false;
-		for (var jj=0; jj < matriz[0].length; jj++){
-			if (matriz[ii][jj]==0 && check1!=false){
+		for (var jj=0; jj < puzzle[0].length; jj++){
+			if (puzzle[ii][jj]==0 && check1!=false){
 				pluma.fillText(descifrar(filas[ind1], clave), 45*ii + 20, 45*jj + 7);
 				ind1++;
 			}
-			if (matriz[ii][jj]!=0 && check1==false){
+			if (puzzle[ii][jj]!=0 && check1==false){
 				pluma.fillText(descifrar(filas[ind1], clave), 45*ii + 20, 45*jj - 4);
 			}
-			if (matriz[jj][ii]==0 && check2!=false){
+			if (puzzle[jj][ii]==0 && check2!=false){
 				pluma.fillText(descifrar(columnas[ind2], clave), 45*jj + 3, 45*ii + 23);
 				ind2++;
 			}
-			if (matriz[jj][ii]!=0 && check2==false){
+			if (puzzle[jj][ii]!=0 && check2==false){
 				pluma.fillText(descifrar(columnas[ind2], clave), 45*jj - 9, 45*ii + 23);
 			}
-			check1 = matriz[ii][jj]!=0;
-			check2 = matriz[jj][ii]!=0;
+			check1 = puzzle[ii][jj]!=0;
+			check2 = puzzle[jj][ii]!=0;
 		}
+	}
+	if (resuelto == true){
+		pluma.font = '30px Arial';
+		pluma.fillStyle = 'blue';
+		pluma.fillText('Has ganado!', 22*puzzle.length + 20, 22*puzzle.length + 20)
 	}
 }
 
@@ -281,7 +287,9 @@ lienzo.addEventListener("click", function (e){
 window.addEventListener("keydown", function(event) {
 	if (event.keyCode > 47 && event.keyCode < 58) {
 		if (selected[0]=='puzzle'){
-			puzzle[selected[1]][selected[2]] = event.keyCode - 48;
+			if (event.keyCode > 48){
+				puzzle[selected[1]][selected[2]] = event.keyCode - 48;
+			}
 		}
 		if (selected[0]=='clave'){
 			llaves[selected[1]] = event.keyCode - 48;
@@ -296,6 +304,44 @@ window.addEventListener("keydown", function(event) {
 		}
 	}
 	actualizar()
+	for (var ii = 0; ii < 10; ii++){
+		if (llaves[ii] == -1){
+			return false;
+		}
+	}
+	ind1 = 0;
+	ind2 = 0;
+	for (var ii = 0; ii < puzzle.length; ii++){
+		suma1 = 0;
+		suma2 = 0;
+		for (var jj=0; jj < puzzle[0].length; jj++){
+			if (puzzle[ii][jj] == -1 || puzzle[jj][ii] == -1){
+				return false;
+			}
+			if (puzzle[ii][jj]==0 && suma1>0){
+				if (parseInt(descifrar(fsumas[ind1], llaves)) != suma1){
+					return false;
+				}
+				suma1 = 0
+				ind1++;
+			}
+			if (puzzle[ii][jj]!=0){
+				suma1 = suma1 + parseInt(descifrar("" + puzzle[ii][jj], llaves))
+			}
+			if (puzzle[jj][ii]==0 && suma2 > 0){
+				if (parseInt(descifrar(csumas[ind2], llaves)) != suma2){
+					return false;
+				}
+				suma2 = 0
+				ind2++;
+			}
+			if (puzzle[jj][ii]!=0){
+				suma2 = suma2 + parseInt(descifrar("" + puzzle[jj][ii], llaves))
+			}
+		}
+	}
+	resuelto = true;
+	actualizar()
 });
 
 function comenzar(){
@@ -305,6 +351,7 @@ function comenzar(){
 	puzzle = kakuro[0];
 	fsumas = kakuro[1];
 	csumas = kakuro[2];
+	resuelto = false;
 	actualizar();
 }
 
