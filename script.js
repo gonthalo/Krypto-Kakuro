@@ -10,6 +10,9 @@ var selected = [];
 var puzzle = [];
 var clues = 7;
 var resuelto = false;
+var niveles = document.getElementById("puzzles");
+var nlist = niveles.textContent.split(";");
+var levels = [];
 
 function azar(lista){
 	var r = parseInt(Math.random()*lista.length);
@@ -234,7 +237,7 @@ function actualizar(){
 			pluma.lineTo(45*selected[1] + 40, 45*selected[2] + 40);
 			pluma.lineTo(45*selected[1], 45*selected[2] + 40);
 			pluma.lineTo(45*selected[1], 45*selected[2]);
-			pluma.stroke()
+			pluma.stroke();
 		}
 		if (selected[0]=='clave'){
 			pluma.beginPath();
@@ -249,6 +252,43 @@ function actualizar(){
 	}
 }
 
+function poner_archivo(texto){
+	var lista = texto.split("\n");
+	puzzle = [];
+	llaves = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+	selected = [];
+	tope = 0;
+	for (var ii = 1; ii<lista.length; ii++){
+		puzzle[ii-1] = [];
+		check = false;
+		for (var jj = 0; jj<lista[1].length; jj++){
+			if (lista[ii][jj] == "#"){
+				if (check == true){
+					check = false;
+					tope++;
+				}
+				puzzle[ii-1][jj] = 0;
+			} else {
+				check = true;
+				puzzle[ii-1][jj] = lista[ii][jj];
+			}
+			if (lista[ii][jj] == " "){
+				puzzle[ii-1][jj] = -1;
+			}
+		}
+	}
+	var nlista = lista[0].split(",");
+	csumas = [];
+	fsumas = [];
+	for (var ii = 0; ii<tope; ii++){
+		fsumas[ii] = nlista[ii];
+	}
+	for (var jj = tope; jj<nlista.length; jj++){
+		csumas[csumas.length] = nlista[jj];
+	}
+	actualizar();
+}
+
 lienzo.addEventListener("click", function (e){
 	var x;
 	var y;
@@ -261,14 +301,14 @@ lienzo.addEventListener("click", function (e){
 	}
 	x -= lienzo.offsetLeft;
 	y -= lienzo.offsetTop;
-	console.log(x, y);
+	//console.log(x, y);
 	xx = parseInt(x/45);
 	yy = parseInt(y/45);
 	if (xx<puzzle.length && yy < puzzle.length){
 		if (x - 45*xx < 40 && y - 45*yy < 40){
 			if (puzzle[xx][yy] > 0 && puzzle[xx][yy] < 10 || puzzle[xx][yy]== -1){
 				selected = ['puzzle', xx, yy];
-				console.log('selected puzzle');
+				//console.log('selected puzzle');
 			}
 		}
 	}
@@ -277,7 +317,7 @@ lienzo.addEventListener("click", function (e){
 		if (yyy>=0 && yyy<10){
 			if (y - 53 - 35*yyy < 28){
 				selected = ['clave', yyy]
-				console.log('selected clave');
+				//console.log('selected clave');
 			}
 		}
 	}
@@ -345,6 +385,16 @@ window.addEventListener("keydown", function(event) {
 });
 
 function comenzar(){
+	first = 0;
+	for (ii = 0; ii<nlist.length-1; ii++){
+		if (nlist[ii][0] == "#" && nlist[ii+1][0] != "#"){
+			levels[levels.length] = nlist[first];
+			for (jj = first+1; jj <= ii; jj++){
+				levels[levels.length-1] = levels[levels.length-1] + "\n" + nlist[jj];
+			}
+			first = ii+1;
+		}
+	}
 	clues = document.getElementById('an').value;
 	llaves = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
 	var kakuro = generar(forma);
