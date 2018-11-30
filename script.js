@@ -15,15 +15,15 @@ var nlist = niveles.textContent.split(";");
 var levels = [];
 var mostrar_clave = 10;
 var barra = document.getElementById("bar");
-var nivel_actual = parseInt(barra.innerText.split(" ")[1])-4
+var nivel_actual = parseInt(barra.innerText.split(" ")[1])-4;
 // constantes
-var square_size = 40
-var grid_size = 45
-var ksquare_size = 28
-var kgrid_size = 35
-var font_puzzle = '30px Arial'
-var font_sums = '12px Arial'
-var font_key = '20px Arial'
+var square_size = 40;
+var grid_size = 45;
+var ksquare_size = 28;
+var kgrid_size = 35;
+var font_puzzle = '30px Arial';
+var font_sums = '12px Arial';
+var font_key = '20px Arial';
 
 
 function min(n1, n2){
@@ -211,7 +211,7 @@ function dibujar(puzzle, filas, columnas, clave){
 				pluma.fillText(descifrar(filas[ind1], clave), grid_size*ii + 20, grid_size*jj - 4);
 			}
 			if (puzzle[jj][ii]==0 && check2!=false){
-				pluma.fillText(descifrar(columnas[ind2], clave), grid_size*jj + 3, grid_size*ii + 23);
+				pluma.fillText(descifrar(columnas[ind2], clave), grid_size*jj + 5, grid_size*ii + 23);
 				ind2++;
 			}
 			if (puzzle[jj][ii]!=0 && check2==false){
@@ -253,8 +253,6 @@ function dibujar(puzzle, filas, columnas, clave){
 		pluma.font = font_sums;
 		pluma.fillText("23", const1 + 5*grid_size + 3, const2 + 23);
 		pluma.fillText("23", const1 - 9, const2 + 23);
-		//pluma.font = "20px Arial";
-		//pluma.fillText("3+7+4=14", const1 + 1.5*grid_size, const2 + 2*grid_size);
 		pluma.fillStyle = 'red';
 		pluma.font = font_puzzle;
 		pluma.fillText("6", const1 + 4*grid_size + parseInt(square_size/2), const2 + parseInt((31*square_size)/40));
@@ -352,6 +350,37 @@ function poner_archivo(texto){
 	for (var jj = tope; jj<nlista.length; jj++){
 		csumas[csumas.length] = nlista[jj];
 	}
+	alf = "";
+	for (var ii = 0; ii < 26; ii++){
+		letra = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[ii];
+		found = false;
+		for (var jj = 0; jj < csumas.length; jj ++){
+			if (csumas[jj].indexOf(letra) != -1){
+				found = true;
+				break;
+			}
+		}
+		for (var jj = 0; jj < fsumas.length; jj ++){
+			if (fsumas[jj].indexOf(letra) != -1 || found){
+				found = true;
+				break;
+			}
+		}
+		for (var jj = 0; jj < puzzle.length && found == false; jj++){
+			for (var kk = 0; kk < puzzle[0].length; kk++){
+				if (puzzle[jj][kk] == letra){
+					found = true;
+					break;
+				}
+			}
+		}
+		if (found){
+			alf = alf + letra;
+		}
+	}
+	for (ii = alf.length; ii < 10; ii ++){
+		alf = alf + "*-+!?#&%@$"[ii];
+	}
 	actualizar();
 }
 
@@ -447,9 +476,37 @@ window.addEventListener("keydown", function(event) {
 			}
 		}
 	}
+	lis1 = [];
+	lis2 = [];
+	for (var ii = 0; ii < puzzle.length; ii++){
+		for (var jj = 0; jj < puzzle[0].length; jj++){
+			if (puzzle[ii][jj] == 0){
+				lis1 = [];
+			} else {
+				if (puzzle[ii][jj] > 0 && puzzle[ii][jj] < 10){
+					if (lis1.indexOf(puzzle[ii][jj]) != -1){
+						return false;
+					}
+					lis1[lis1.length] = puzzle[ii][jj];
+				}
+			}
+			if (puzzle[jj][ii] == 0){
+				lis2 = [];
+			} else {
+				if (puzzle[jj][ii] > 0 && puzzle[jj][ii] < 10){
+					if (lis2.indexOf(puzzle[jj][ii]) != -1){
+						return false;
+					}
+					lis2[lis2.length] = puzzle[jj][ii];
+				}
+			}
+		}
+	}
+	if (resuelto == false){
+		barra.innerHTML = barra.innerHTML + "<input value=\"Next level\" style = \"font-size: 20px\" onclick=\"next_level()\" type=\"button\">";
+	}
 	resuelto = true;
-	barra.innerHTML = barra.innerHTML + "<input value=\"Next level\" style = \"font-size: 20px\" onclick=\"next_level()\" type=\"button\">"
-	actualizar()
+	actualizar();
 });
 
 function comenzar(){
