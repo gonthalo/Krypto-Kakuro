@@ -9,6 +9,29 @@ var csumas = [];
 var selected = [];
 var puzzle = [];
 var clues = 7;
+var resuelto = false;
+var niveles = document.getElementById("puzzles");
+var nlist = niveles.textContent.split(";");
+var levels = [];
+var mostrar_clave = 10;
+var barra = document.getElementById("bar");
+var nivel_actual = parseInt(barra.innerText.split(" ")[1])-4;
+// constantes
+var square_size = 40;
+var grid_size = 45;
+var ksquare_size = 28;
+var kgrid_size = 35;
+var font_puzzle = '30px Arial';
+var font_sums = '12px Arial';
+var font_key = '20px Arial';
+
+
+function min(n1, n2){
+	if (n1<n2){
+		return n1
+	}
+	return n2
+}
 
 function azar(lista){
 	var r = parseInt(Math.random()*lista.length);
@@ -152,95 +175,213 @@ function descifrar(texto, clave){
 	return res;
 }
 
-function dibujar(matriz, filas, columnas, clave){
+function dibujar(puzzle, filas, columnas, clave){
 	pluma.textAlign = 'center';
-	pluma.font = '30px Arial';
-	for (var ii=0; ii < matriz.length; ii++){
-		for (var jj=0; jj < matriz[0].length; jj++){
-			var valor = matriz[ii][jj];
+	pluma.font = font_puzzle;
+	for (var ii=0; ii < puzzle.length; ii++){
+		for (var jj=0; jj < puzzle[0].length; jj++){
+			var valor = puzzle[ii][jj];
 			if (valor!=0){
 				pluma.fillStyle = 'black';
-				pluma.fillRect(45*ii, 45*jj, 40, 40);
+				pluma.fillRect(grid_size*ii, grid_size*jj, square_size, square_size);
 				pluma.stroke()
 				if (valor != -1){
 					pluma.fillStyle = 'white';
-					pluma.fillText(descifrar(valor.toString(), clave), 45*ii + 20, 45*jj + 31);
+					if (resuelto){
+						pluma.fillStyle = 'rgb(20, 250, 100)';
+					}
+					pluma.fillText(descifrar(valor.toString(), clave), grid_size*ii + parseInt(square_size/2), grid_size*jj + parseInt((31*square_size)/40));
 				}
 			}
 		}
 	}
 	pluma.fillStyle = 'black';
-	pluma.font = '10px Arial';
+	pluma.font = font_sums;
 	var ind1 = 0;
 	var ind2 = 0;
-	for (var ii=0; ii < matriz.length; ii++){
+	for (var ii=0; ii < puzzle.length; ii++){
 		var check1 = false;
 		var check2 = false;
-		for (var jj=0; jj < matriz[0].length; jj++){
-			if (matriz[ii][jj]==0 && check1!=false){
-				pluma.fillText(descifrar(filas[ind1], clave), 45*ii + 20, 45*jj + 7);
+		for (var jj=0; jj < puzzle[0].length; jj++){
+			if (puzzle[ii][jj]==0 && check1!=false){
+				pluma.fillText(descifrar(filas[ind1], clave), grid_size*ii + 20, grid_size*jj + 7);
 				ind1++;
 			}
-			if (matriz[ii][jj]!=0 && check1==false){
-				pluma.fillText(descifrar(filas[ind1], clave), 45*ii + 20, 45*jj - 4);
+			if (puzzle[ii][jj]!=0 && check1==false){
+				pluma.fillText(descifrar(filas[ind1], clave), grid_size*ii + 20, grid_size*jj - 4);
 			}
-			if (matriz[jj][ii]==0 && check2!=false){
-				pluma.fillText(descifrar(columnas[ind2], clave), 45*jj + 3, 45*ii + 23);
+			if (puzzle[jj][ii]==0 && check2!=false){
+				pluma.fillText(descifrar(columnas[ind2], clave), grid_size*jj + 5, grid_size*ii + 23);
 				ind2++;
 			}
-			if (matriz[jj][ii]!=0 && check2==false){
-				pluma.fillText(descifrar(columnas[ind2], clave), 45*jj - 9, 45*ii + 23);
+			if (puzzle[jj][ii]!=0 && check2==false){
+				pluma.fillText(descifrar(columnas[ind2], clave), grid_size*jj - 9, grid_size*ii + 23);
 			}
-			check1 = matriz[ii][jj]!=0;
-			check2 = matriz[jj][ii]!=0;
+			check1 = puzzle[ii][jj]!=0;
+			check2 = puzzle[jj][ii]!=0;
 		}
+	}
+	if (nivel_actual == -3){
+		const1 = 400
+		const2 = 100
+		pluma.fillStyle = 'black';
+		pluma.fillRect(const1, const2, square_size, square_size);
+		pluma.stroke();
+		pluma.fillRect(const1 + grid_size, const2, square_size, square_size);
+		pluma.stroke();
+		pluma.fillRect(const1 + 2*grid_size, const2, square_size, square_size);
+		pluma.stroke();
+		pluma.font = font_sums;
+		pluma.fillText("14", const1 + 3*grid_size + 3, const2 + 23);
+		pluma.fillText("14", const1 - 9, const2 + 23);
+		pluma.font = "20px Arial";
+		pluma.fillText("3+7+4=14", const1 + 1.5*grid_size, const2 + 2*grid_size);
+		pluma.fillStyle = 'rgb(20, 250, 100)';
+		pluma.font = font_puzzle;
+		pluma.fillText("3", const1 + parseInt(square_size/2), const2 + parseInt((31*square_size)/40));
+		pluma.fillText("7", const1 + grid_size + parseInt(square_size/2), const2 + parseInt((31*square_size)/40));
+		pluma.fillText("4", const1 + 2*grid_size + parseInt(square_size/2), const2 + parseInt((31*square_size)/40));
+	}
+	if (nivel_actual == -2){
+		const1 = 400
+		const2 = 100
+		pluma.fillStyle = 'black';
+		for (var ii = 0; ii < 5; ii++){
+			pluma.fillRect(const1 + ii*grid_size, const2, square_size, square_size);
+			pluma.stroke();
+		}
+		pluma.font = font_sums;
+		pluma.fillText("23", const1 + 5*grid_size + 3, const2 + 23);
+		pluma.fillText("23", const1 - 9, const2 + 23);
+		pluma.fillStyle = 'red';
+		pluma.font = font_puzzle;
+		pluma.fillText("6", const1 + 4*grid_size + parseInt(square_size/2), const2 + parseInt((31*square_size)/40));
+		pluma.fillText("6", const1 + grid_size + parseInt(square_size/2), const2 + parseInt((31*square_size)/40));
+		pluma.fillStyle = 'white';
+		pluma.fillText("2", const1 + parseInt(square_size/2), const2 + parseInt((31*square_size)/40));
+		pluma.fillText("8", const1 + 2*grid_size + parseInt(square_size/2), const2 + parseInt((31*square_size)/40));
+		pluma.fillText("1", const1 + 3*grid_size + parseInt(square_size/2), const2 + parseInt((31*square_size)/40));
 	}
 }
 
 function dibujar_clave(){
 	pluma.textAlign = 'center';
-	pluma.font = '20px Arial';
-	for (var ii=0; ii<10; ii++){
+	pluma.font = font_key;
+	for (var ii=0; ii<min(mostrar_clave, 10); ii++){
 		pluma.fillStyle = 'black';
-		pluma.fillText(alf[ii] + '=', 45*puzzle.length + 25, 35*ii + 74);
-		pluma.fillRect(45*puzzle.length + 40, 53 + 35*ii, 28, 28);
+		pluma.fillText(alf[ii] + '=', grid_size*puzzle.length + 25, kgrid_size*ii + 74);
+		pluma.fillRect(grid_size*puzzle.length + 40, 53 + kgrid_size*ii, ksquare_size, ksquare_size);
 		pluma.stroke();
 	}
 	pluma.fillStyle = 'white';
-	for (var ii=0; ii<10; ii++){
+	for (var ii=0; ii<min(mostrar_clave, 10); ii++){
 		if (llaves[ii] != -1){
-			pluma.fillText(llaves[ii].toString(), 45*puzzle.length + 53, 35*ii + 74);
+			pluma.fillText(llaves[ii].toString(), grid_size*puzzle.length + 53, kgrid_size*ii + 74);
 		}
 	}
 }
 
 function actualizar(){
 	pluma.fillStyle = 'white';
-	pluma.fillRect(0, 0, 600, 600);
+	pluma.fillRect(0, 0, pluma.canvas.width, pluma.canvas.height);
 	dibujar(puzzle, fsumas, csumas, llaves);
 	dibujar_clave();
 	if (selected!=[]){
-		pluma.fillStyle = 'rgb(5, 200, 100)';
+		pluma.strokeStyle = 'rgb(5, 200, 100)';
 		if (selected[0]=='puzzle'){
 			pluma.beginPath();
-			pluma.moveTo(45*selected[1], 45*selected[2]);
-			pluma.lineTo(45*selected[1] + 40, 45*selected[2]);
-			pluma.lineTo(45*selected[1] + 40, 45*selected[2] + 40);
-			pluma.lineTo(45*selected[1], 45*selected[2] + 40);
-			pluma.lineTo(45*selected[1], 45*selected[2]);
-			pluma.stroke()
+			pluma.moveTo(grid_size*selected[1] - 1, grid_size*selected[2]);
+			pluma.lineTo(grid_size*selected[1] + square_size, grid_size*selected[2]);
+			pluma.lineTo(grid_size*selected[1] + square_size, grid_size*selected[2] + square_size);
+			pluma.lineTo(grid_size*selected[1], grid_size*selected[2] + square_size);
+			pluma.lineTo(grid_size*selected[1], grid_size*selected[2]);
+			pluma.stroke();
 		}
 		if (selected[0]=='clave'){
 			pluma.beginPath();
-			pluma.moveTo(45*puzzle.length + 40, 53 + 35*selected[1]);
-			pluma.lineTo(45*puzzle.length + 40 + 28, 53 + 35*selected[1]);
-			pluma.lineTo(45*puzzle.length + 40 + 28, 53 + 35*selected[1] + 28);
-			pluma.lineTo(45*puzzle.length + 40, 53 + 35*selected[1] + 28);
-			pluma.lineTo(45*puzzle.length + 40, 53 + 35*selected[1]);
+			pluma.moveTo(grid_size*puzzle.length + square_size-1 , 53 + kgrid_size*selected[1]);
+			pluma.lineTo(grid_size*puzzle.length + square_size + ksquare_size, 53 + kgrid_size*selected[1]);
+			pluma.lineTo(grid_size*puzzle.length + square_size + ksquare_size, 53 + kgrid_size*selected[1] + ksquare_size);
+			pluma.lineTo(grid_size*puzzle.length + square_size, 53 + kgrid_size*selected[1] + ksquare_size);
+			pluma.lineTo(grid_size*puzzle.length + square_size, 53 + kgrid_size*selected[1]);
 			pluma.stroke();
 			//pluma.fillRect(45*puzzle.length + 40, 53 + 35*selected[1], 28, 28);
 		}
 	}
+}
+
+function next_level(){
+	nivel_actual ++;
+	barra.innerHTML = "Nivel " + (4+nivel_actual) + "<input value=\"Reset\" style = \"font-size: 20px\" onclick=\"comenzar()\" type=\"button\">";
+	comenzar();
+}
+
+function poner_archivo(texto){
+	var lista = texto.split("\n");
+	puzzle = [];
+	llaves = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+	selected = [];
+	tope = 0;
+	for (var ii = 1; ii<lista.length; ii++){
+		puzzle[ii-1] = [];
+		check = false;
+		for (var jj = 0; jj<lista[1].length; jj++){
+			if (lista[ii][jj] == "#"){
+				if (check == true){
+					check = false;
+					tope++;
+				}
+				puzzle[ii-1][jj] = 0;
+			} else {
+				check = true;
+				puzzle[ii-1][jj] = lista[ii][jj];
+			}
+			if (lista[ii][jj] == " "){
+				puzzle[ii-1][jj] = -1;
+			}
+		}
+	}
+	var nlista = lista[0].split(",");
+	csumas = [];
+	fsumas = [];
+	for (var ii = 0; ii<tope; ii++){
+		fsumas[ii] = nlista[ii];
+	}
+	for (var jj = tope; jj<nlista.length; jj++){
+		csumas[csumas.length] = nlista[jj];
+	}
+	alf = "";
+	for (var ii = 0; ii < 26; ii++){
+		letra = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[ii];
+		found = false;
+		for (var jj = 0; jj < csumas.length; jj ++){
+			if (csumas[jj].indexOf(letra) != -1){
+				found = true;
+				break;
+			}
+		}
+		for (var jj = 0; jj < fsumas.length; jj ++){
+			if (fsumas[jj].indexOf(letra) != -1 || found){
+				found = true;
+				break;
+			}
+		}
+		for (var jj = 0; jj < puzzle.length && found == false; jj++){
+			for (var kk = 0; kk < puzzle[0].length; kk++){
+				if (puzzle[jj][kk] == letra){
+					found = true;
+					break;
+				}
+			}
+		}
+		if (found){
+			alf = alf + letra;
+		}
+	}
+	for (ii = alf.length; ii < 10; ii ++){
+		alf = alf + "*-+!?#&%@$"[ii];
+	}
+	actualizar();
 }
 
 lienzo.addEventListener("click", function (e){
@@ -255,33 +396,36 @@ lienzo.addEventListener("click", function (e){
 	}
 	x -= lienzo.offsetLeft;
 	y -= lienzo.offsetTop;
-	console.log(x, y);
+	//console.log(x, y);
 	xx = parseInt(x/45);
 	yy = parseInt(y/45);
 	if (xx<puzzle.length && yy < puzzle.length){
 		if (x - 45*xx < 40 && y - 45*yy < 40){
 			if (puzzle[xx][yy] > 0 && puzzle[xx][yy] < 10 || puzzle[xx][yy]== -1){
 				selected = ['puzzle', xx, yy];
-				console.log('selected puzzle');
+				//console.log('selected puzzle');
 			}
 		}
 	}
 	if (x > 45*puzzle.length + 40 && x < 45*puzzle.length + 68){
 		yyy = parseInt((y - 53)/35);
-		if (yyy>=0 && yyy<10){
+		if (yyy>=0 && yyy<min(mostrar_clave, 10)){
 			if (y - 53 - 35*yyy < 28){
 				selected = ['clave', yyy]
-				console.log('selected clave');
+				//console.log('selected clave');
 			}
 		}
 	}
+	actualizar()
 	actualizar()
 }, false);
 
 window.addEventListener("keydown", function(event) {
 	if (event.keyCode > 47 && event.keyCode < 58) {
 		if (selected[0]=='puzzle'){
-			puzzle[selected[1]][selected[2]] = event.keyCode - 48;
+			if (event.keyCode > 48){
+				puzzle[selected[1]][selected[2]] = event.keyCode - 48;
+			}
 		}
 		if (selected[0]=='clave'){
 			llaves[selected[1]] = event.keyCode - 48;
@@ -296,15 +440,111 @@ window.addEventListener("keydown", function(event) {
 		}
 	}
 	actualizar()
+	for (var ii = 0; ii < 10; ii++){
+		if (llaves[ii] == -1){
+			return false;
+		}
+	}
+	ind1 = 0;
+	ind2 = 0;
+	for (var ii = 0; ii < puzzle.length; ii++){
+		suma1 = 0;
+		suma2 = 0;
+		for (var jj=0; jj < puzzle[0].length; jj++){
+			if (puzzle[ii][jj] == -1 || puzzle[jj][ii] == -1){
+				return false;
+			}
+			if (puzzle[ii][jj]==0 && suma1>0){
+				if (parseInt(descifrar(fsumas[ind1], llaves)) != suma1){
+					return false;
+				}
+				suma1 = 0
+				ind1++;
+			}
+			if (puzzle[ii][jj]!=0){
+				suma1 = suma1 + parseInt(descifrar("" + puzzle[ii][jj], llaves))
+			}
+			if (puzzle[jj][ii]==0 && suma2 > 0){
+				if (parseInt(descifrar(csumas[ind2], llaves)) != suma2){
+					return false;
+				}
+				suma2 = 0
+				ind2++;
+			}
+			if (puzzle[jj][ii]!=0){
+				suma2 = suma2 + parseInt(descifrar("" + puzzle[jj][ii], llaves))
+			}
+		}
+	}
+	lis1 = [];
+	lis2 = [];
+	for (var ii = 0; ii < puzzle.length; ii++){
+		for (var jj = 0; jj < puzzle[0].length; jj++){
+			if (puzzle[ii][jj] == 0){
+				lis1 = [];
+			} else {
+				if (puzzle[ii][jj] > 0 && puzzle[ii][jj] < 10){
+					if (lis1.indexOf(puzzle[ii][jj]) != -1){
+						return false;
+					}
+					lis1[lis1.length] = puzzle[ii][jj];
+				}
+			}
+			if (puzzle[jj][ii] == 0){
+				lis2 = [];
+			} else {
+				if (puzzle[jj][ii] > 0 && puzzle[jj][ii] < 10){
+					if (lis2.indexOf(puzzle[jj][ii]) != -1){
+						return false;
+					}
+					lis2[lis2.length] = puzzle[jj][ii];
+				}
+			}
+		}
+	}
+	if (resuelto == false){
+		barra.innerHTML = barra.innerHTML + "<input value=\"Next level\" style = \"font-size: 20px\" onclick=\"next_level()\" type=\"button\">";
+	}
+	resuelto = true;
+	actualizar();
 });
 
 function comenzar(){
-	clues = document.getElementById('an').value;
+	pluma.canvas.height = window.innerHeight - 120
+	pluma.canvas.width = window.innerWidth - 40
+	first = 0;
+	for (ii = 0; ii<nlist.length-1; ii++){
+		if (nlist[ii][0] == "#" && nlist[ii+1][0] != "#"){
+			levels[levels.length] = nlist[first];
+			for (jj = first+1; jj <= ii; jj++){
+				levels[levels.length-1] = levels[levels.length-1] + "\n" + nlist[jj];
+			}
+			first = ii+1;
+		}
+	}
+	clues = 10;//document.getElementById('an').value;
 	llaves = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
 	var kakuro = generar(forma);
 	puzzle = kakuro[0];
 	fsumas = kakuro[1];
 	csumas = kakuro[2];
+	poner_archivo(levels[3+nivel_actual]);
+	if (nivel_actual == -3){
+		mostrar_clave = 0;
+		llaves = [0,1,2,3,4,5,6,7,8,9];
+	}
+	if (nivel_actual == -2){
+		mostrar_clave = 0;
+		llaves = [1,2,3,4,5,6,7,8,9,0];
+	}
+	if (nivel_actual == -1){
+		mostrar_clave = 3;
+		llaves = [-1, -1, -1, 1,3,4,5,6,8,9,0]
+	}
+	if (nivel_actual == 0){
+		mostrar_clave = 10;
+	}
+	resuelto = false;
 	actualizar();
 }
 

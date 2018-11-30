@@ -2,13 +2,21 @@
 <html>
 <head>
 	<title>Krypto Kakuro</title>
+	<meta charset="utf-8"/>
 </head>
 <body>
-	<div style="border:2px solid rgb(5,200,100)" float="left">
-		<canvas id="lienzo" width="600px" height="600px" >Your browser does not render the HTML 5 canvas tag</canvas>
-		Pistas:<input type="number" id="an" max="10" min="5" value="7">
-		<input type="button" value="Reset" onclick="comenzar()">
-	</div>
+	<p id="puzzles" style = "font-size: 0px">G,CA,BC,BA,BI,J,BH,BE,D,BB,BF,BF;#######;###CE##;#IFBG##;#J #CI#;##C  H#;##EF###;#######;D,BD,AC,AF,AI,AI,F,F,AA,AA,AJ,F,AG,H,AJ,CJ,AG,AC,H,AJ;########;#  #H  #;#G #   #;#  CF###;###DI A#;#   #B #;#   # E#;########;DB,DJ,J,B,DD,DD,DJ,DC,DC,EA,G,DA,J,J,DH,DF;########;### B ##;# J   ##;#CB##CG#;# G##  #;##IE   #;##DBF###;########;HD,HG,HD,HD,HG,HD,I,AD,HI,HD,HC,G;#######;###BA##;#CAGJ##;#A #FE#;##HGEJ#;##GH###;#######;J,CH,CA,A,HH,HH,CH,DB,D,CE,CJ,E;#######;##   ##;##    #;# F#  #;#    ##;## BG##;#######;C,FE,G,A,GB,FC,A,FC,H,FD,FB,JJ;#######;###  ##;#     #;#F #C #;#     #;##B ###;#######;D,EJ,FJ,ED,IF,EI,A,A,EE,IC,G,IC,A,I;#######;#  #  #;#     #;##   ##;#     #;#B #C #;#######;IB,IH,IB,ID,ID,GG,IC,IE,IE,IG,BE,IC;#######;##   ##;##    #;#  #  #;#  F ##;## A ##;#######;H,GA,GC,A,GB,GA,GC,FI,C,GG,GC,GJ;#######;## DC##;#EJ  ##;#B #  #;##F J #;##   ##;#######;F,F,AB,C,IA,IE,J,IC,E,ID,G,AF,AJ,G,ID,J;########;##  #  #;##  F  #;##J  ###;###   ##;#     ##;#  #B ##;########</p>
+	<table>
+		<td>
+			<tr>
+				<div style="border:2px solid rgb(5,200,100)" width="600px" height="500px">
+					<canvas id="lienzo" width="600px" height="500px" >Your browser does not render the HTML 5 canvas tag</canvas>
+					<!--Pistas:<input type="number" id="an" max="10" min="5" value="7">-->
+					<p id = "bar" style = "font-size: 24px"> Nivel 1 <input style = "font-size: 20px"type="button" value="Reset" onclick="comenzar()"></p>
+				</div>
+			</tr>
+		</td>
+	</table>
 	<!--<div style="position:absolute; top: 300px; left: 660px; border:2px solid rgb(5,200,100)">
 		Dimensiones: <input type="number" id="an" max="5" min="0"><input type="number" id="bn" max="5" min="0"><input type="button" value="Cambiar" onclick="swap()">
 		</br></br>
