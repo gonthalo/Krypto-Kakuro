@@ -503,23 +503,29 @@ window.addEventListener("keydown", function(event) {
 		}
 	}
 	if (resuelto == false){
-		barra.innerHTML = barra.innerHTML + "<input value=\"Next level\" style = \"font-size: 20px\" onclick=\"next_level()\" type=\"button\">";
+		if (nivel_actual == levels.length - 4){
+			barra.innerHTML = barra.innerHTML + "  Has ganado!";
+		} else {
+			barra.innerHTML = barra.innerHTML + "<input value=\"Next level\" style = \"font-size: 20px\" onclick=\"next_level()\" type=\"button\">";
+		}
 	}
 	resuelto = true;
 	actualizar();
 });
 
 function comenzar(){
-	pluma.canvas.height = window.innerHeight - 120
-	pluma.canvas.width = window.innerWidth - 40
+	pluma.canvas.height = window.innerHeight - 70;
+	pluma.canvas.width = window.innerWidth - 40;
 	first = 0;
-	for (ii = 0; ii<nlist.length-1; ii++){
-		if (nlist[ii][0] == "#" && nlist[ii+1][0] != "#"){
-			levels[levels.length] = nlist[first];
-			for (jj = first+1; jj <= ii; jj++){
-				levels[levels.length-1] = levels[levels.length-1] + "\n" + nlist[jj];
+	if (levels.length == 0){
+		for (ii = 0; ii<nlist.length-1; ii++){
+			if (nlist[ii][0] == "#" && nlist[ii+1][0] != "#"){
+				levels[levels.length] = nlist[first];
+				for (jj = first+1; jj <= ii; jj++){
+					levels[levels.length-1] = levels[levels.length-1] + "\n" + nlist[jj];
+				}
+				first = ii+1;
 			}
-			first = ii+1;
 		}
 	}
 	clues = 10;//document.getElementById('an').value;
